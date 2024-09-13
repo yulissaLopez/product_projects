@@ -6,6 +6,7 @@ from .models import Producto
 def index(request):
     if request.method == "GET":
         products = list(Producto.objects.all().values("id_product", "name_prod" ,"price_prod", "stock_prod"))
-        
         return JsonResponse(data={"message":"ok", "products":products})
+
+# llenar 5 0 4 productos mas en tabla productos por consola
         
