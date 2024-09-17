@@ -17,7 +17,6 @@ __pycache__/
 *$py.class
 
 # Archivos de bases de datos
-*.sqlite3
 *.db
 
 # Archivos de logs
