@@ -6,11 +6,17 @@ import json
 
 # Create your views here.
 @csrf_exempt
-def index(request):
+def index(request, pk = None):
     if request.method == "GET":
-        # Values toma las llaves y devuelve los valores a cada llave
-        products = list(Producto.objects.all().values("id_product", "name_prod" ,"price_prod", "stock_prod"))
-        return JsonResponse(data={"message":"ok", "products":products})
+        if pk:
+            # recupera el producto con el id que tiene la pk
+            product = Producto.objects.get(id_product=pk)
+            products = [product.name_prod, product.price_prod, product.stock_prod]
+        else:
+            # Values toma las llaves y devuelve los valores a cada llave
+            products = list(Producto.objects.all().values("id_product", "name_prod" ,"price_prod", "stock_prod"))
+
+        return JsonResponse(data={"message":"ok", "productos" : products})
     
     #envia informacion del cliente -> servidor
     if request.method == "POST":
@@ -38,11 +44,16 @@ def index(request):
         return JsonResponse(data = {'message' : 'ok', "producto" : producto_data})
 
     if request.method == "DELETE":
-        body = request.body.decode('utf-8')
-        request_id = json.loads(body)
 
-        delete_element = Producto.objects.filter(id_product=request_id['id'])
-        delete_element.delete()
+        if pk:
+           producto = Producto.objects.get(id_product=pk)
+           producto.delete()
+        
+        # si el id se envia por el cuerpo del request
+        # body = request.body.decode('utf-8')
+        # request_id = json.loads(body)
+        # delete_element = Producto.objects.filter(id_product=request_id['id'])
+        # delete_element.delete()
 
         return JsonResponse(data={'message' : 'ok'})
 
