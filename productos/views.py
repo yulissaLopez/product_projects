@@ -36,7 +36,18 @@ def index(request):
 
 
         return JsonResponse(data = {'message' : 'ok', "producto" : producto_data})
+
+    if request.method == "DELETE":
+        body = request.body.decode('utf-8')
+        request_id = json.loads(body)
+
+        delete_element = Producto.objects.filter(id_product=request_id['id'])
+        delete_element.delete()
+
+        return JsonResponse(data={'message' : 'ok'})
+
 # return HttpResponse("Metodo no disponible", status = 405)
+
 # anadir productos desde un json
 def add(request):
     # abro el json
