@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "nombre": "Manzana Roja",
+        "precio": 12.50,
+        "stock": 100
+    },
+    {
+        "id": 2,
+        "nombre": "Pan Integral",
+        "precio": 25.00,
+        "stock": 50
+    },
+    {
+        "id": 3,
+        "nombre": "Leche Entera",
+        "precio": 18.75,
+        "stock": 80
+    },
+    {
+        "id": 4,
+        "nombre": "Arroz Basmati",
+        "precio": 45.00,
+        "stock": 60
+    },
+    {
+        "id": 5,
+        "nombre": "Huevos Orgánicos",
+        "precio": 30.00,
+        "stock": 120
+    },
+    {
+        "id": 6,
+        "nombre": "Aceite de Oliva",
+        "precio": 80.00,
+        "stock": 40
+    },
+    {
+        "id": 7,
+        "nombre": "Tomates Frescos",
+        "precio": 20.00,
+        "stock": 90
+    },
+    {
+        "id": 8,
+        "nombre": "Pasta Integral",
+        "precio": 35.00,
+        "stock": 70
+    },
+    {
+        "id": 9,
+        "nombre": "Yogur Natural",
+        "precio": 15.00,
+        "stock": 110
+    },
+    {
+        "id": 10,
+        "nombre": "Queso Manchego",
+        "precio": 120.00,
+        "stock": 30
+    }
+]
