@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse,JsonResponse
 from .models import Producto
@@ -57,6 +58,43 @@ def index(request, pk = None):
 
         return JsonResponse(data={'message' : 'ok'})
 
+    if request.method == "PUT":
+        if pk:
+            # Obtener el producto a editar de la request
+            body_unicode = request.body.decode('utf-8')
+            # de Json a Python Dict
+            body_data = json.loads(body_unicode)
+
+            # busco el inscatce con el id de la request
+            product_to_edit = Producto.objects.get(id_product=pk)
+
+            # cambio los valores por los nuevos
+            product_to_edit.name_prod = body_data['name_prod']
+            product_to_edit.price_prod = body_data['price_prod']
+            product_to_edit.stock_prod = body_data['stock_prod']
+
+            #guardo los cambios
+            product_to_edit.save()
+            product_dict = model_to_dict(product_to_edit)
+            return JsonResponse(data={'mensaje' : 'el producto ha sido modificado con exito', 'json' : product_dict})
+
+    if request.method == "PATCH":
+        if pk:
+            # obtengo el id del producto a editar
+            product_to_edit = Producto.objects.get(id_product=pk)
+
+            # obtener la data a cambiar
+            body_unicode = request.body.decode('utf-8')
+            data = json.loads(body_unicode)
+            # Itero sobre el dict_keys y saco el nombre de las claves
+            for clave, valor in data.items():
+                #       objeto, nombre_atributo, valor
+                setattr(product_to_edit, clave, valor)
+            
+            product_to_edit.save()
+            #print(product_to_edit)
+            product_dict = model_to_dict(product_to_edit)
+        return JsonResponse(data={'producto' : product_dict})
 # return HttpResponse("Metodo no disponible", status = 405)
 
 # anadir productos desde un json
