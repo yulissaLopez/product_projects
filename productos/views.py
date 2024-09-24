@@ -13,7 +13,6 @@ def index(request, pk = None):
     template = loader.get_template('productos/index.html')
     message = {"products_list" : products_list}
     return HttpResponse(template.render(message, request))
-
     #envia informacion del cliente -> servidor
     if request.method == "POST":
         #decodifica el cuerpo de la request en utf / request.body es una cadena de bytes

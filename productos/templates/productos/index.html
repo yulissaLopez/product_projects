@@ -3,7 +3,7 @@
     <ul>
     {% for product in products_list %}
         <li>
-            <a href="/productos/{{ product.id_product }}/">{{ product.id_product }}</a>
+            <a href="{{product.id_product}}/">{{ product.id_product }}</a>
         </li>
         <li>
             <strong>Name: </strong>{{ product.name_prod }}
@@ -18,5 +18,5 @@
     {% endfor %}
     </ul>
 {% else %}
-    <h1 style="color: red">No products available.</h1>
+    <h1 style="color: blue">No products available.</h1>
 {% endif %}
