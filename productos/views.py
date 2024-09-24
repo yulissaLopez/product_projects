@@ -80,21 +80,24 @@ def index(request, pk = None):
 
     if request.method == "PATCH":
         if pk:
-            # obtengo el id del producto a editar
-            product_to_edit = Producto.objects.get(id_product=pk)
+        #     # obtengo el id del producto a editar
+        #     product_to_edit = Producto.objects.get(id_product=pk)
 
-            # obtener la data a cambiar
-            body_unicode = request.body.decode('utf-8')
-            data = json.loads(body_unicode)
-            # Itero sobre el dict_keys y saco el nombre de las claves
-            for clave, valor in data.items():
-                #       objeto, nombre_atributo, valor
-                setattr(product_to_edit, clave, valor)
-            
-            product_to_edit.save()
-            #print(product_to_edit)
-            product_dict = model_to_dict(product_to_edit)
-        return JsonResponse(data={'producto' : product_dict})
+        #     # obtener la data a cambiar
+        #     body_unicode = request.body.decode('utf-8')
+        #     data = json.loads(body_unicode)
+        #     # Itero sobre el dict_keys y saco el nombre de las claves
+        #     for clave, valor in data.items():
+        #         #       objeto, nombre_atributo, valor
+        #         setattr(product_to_edit, clave, valor)
+        
+        #     product_to_edit.save()
+        #     #print(product_to_edit)
+        #     product_dict = model_to_dict(product_to_edit)
+        # return JsonResponse(data={'producto' : product_dict})
+        
+            Producto.objects.filter(id_product=pk).update(name_prod="Huevos De Gallina Feliz")
+            return JsonResponse(data={"message" : "product with id = " + str(pk) + " update"})
 # return HttpResponse("Metodo no disponible", status = 405)
 
 # anadir productos desde un json
