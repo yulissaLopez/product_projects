@@ -2,23 +2,17 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse,JsonResponse
+from django.template import loader
 from .models import Producto
 import json
 
 # Create your views here.
 @csrf_exempt
 def index(request, pk = None):
-    if request.method == "GET":
-        if pk:
-            # recupera el producto con el id que tiene la pk
-            product = Producto.objects.get(id_product=pk)
-            products = [product.name_prod, product.price_prod, product.stock_prod]
-        else:
-            # Values toma las llaves y devuelve los valores a cada llave
-            products = list(Producto.objects.all().values("id_product", "name_prod" ,"price_prod", "stock_prod"))
-
-        return JsonResponse(data={"message":"ok", "productos" : products})
-    
+    products_list = Producto.objects.all()
+    template = loader.get_template('productos/index.html')
+    message = {"products_list" : products_list}
+    return HttpResponse(template.render(message, request))
     #envia informacion del cliente -> servidor
     if request.method == "POST":
         #decodifica el cuerpo de la request en utf / request.body es una cadena de bytes
@@ -117,4 +111,8 @@ def add(request):
 
     
     diccionario = {producto['id'] : producto for producto in productos}
+<<<<<<< HEAD
     return JsonResponse(diccionario)
+=======
+    return JsonResponse(diccionario)
+>>>>>>> 57f7d1e3947d9b5b5c72233ae260717090316439
