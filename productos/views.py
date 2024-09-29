@@ -115,5 +115,3 @@ def add(request):
     
     diccionario = {producto['id'] : producto for producto in productos}
     return JsonResponse(diccionario)
-
-# Hacer metodo actualizar un registro 
