@@ -9,10 +9,16 @@ import json
 # Create your views here.
 @csrf_exempt
 def index(request, pk = None):
-    products_list = Producto.objects.all()
-    template = loader.get_template('productos/index.html')
-    message = {"products_list" : products_list}
-    return HttpResponse(template.render(message, request))
+    if request.method == "GET":
+        if pk:
+            # recupera el producto con el id que tiene la pk
+            product = Producto.objects.get(id_product=pk)
+            products = [product.name_prod, product.price_prod, product.stock_prod]
+        else:
+            # Values toma las llaves y devuelve los valores a cada llave
+            products = list(Producto.objects.all().values("id_product", "name_prod" ,"price_prod", "stock_prod"))
+
+        return JsonResponse(data={"message":"ok", "productos" : products})
     #envia informacion del cliente -> servidor
     if request.method == "POST":
         #decodifica el cuerpo de la request en utf / request.body es una cadena de bytes
