@@ -111,8 +111,4 @@ def add(request):
 
     
     diccionario = {producto['id'] : producto for producto in productos}
-<<<<<<< HEAD
     return JsonResponse(diccionario)
-=======
-    return JsonResponse(diccionario)
->>>>>>> 57f7d1e3947d9b5b5c72233ae260717090316439
