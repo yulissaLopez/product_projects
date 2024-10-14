@@ -1,51 +1,49 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Usuario
-from django.core.serializers import serialize
-from django.views.decorators.csrf import csrf_exempt
-from .serializers import UsuarioSerializer
 from rest_framework import status
-import json
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Usuario
+from .serializers import UsuarioSerializer
+
 
 # Create your views here.
-@csrf_exempt
-def index(request, pk = None):
-    #Metodo GET
+@api_view(['GET', 'POST'])
+def user_list(request, pk):
+    """ Listar de usuarios o para crear un usuario """
+
     if request.method == 'GET':
-        if pk:
-            # Obtener el usuario especifico / entrega un queryset
-            user = Usuario.objects.get(id = pk)
-            # Serializo manualmente el queryset y construyo un diccionario
-            list_usuarios = {
-                'id' : user.id,
-                'username' : user.username,
-                'email' : user.email,
-                'first_name' : user.first_name,
-                'last_name' : user.last_name
-            }
-        else:
-            # Obtengo la lista de usuarios creados / me entrega un Queryset
-            # # Se obtienen solo los campos necesarios con values
-            usuarios = Usuario.objects.all().values('id', 'username', 'email', 'first_name', 'last_name', 'direccion', 'pais', 'date_joined')
-            # Covierto el queryset en una lista de diccionarios 
-            list_usuarios = list(usuarios)
-        return JsonResponse(data={"mensaje" : "200", "Usuarios": list_usuarios})
+        users = Usuario.objects.all()
+        # Convierte el queryset en un dato nativo de django
+        serializer = UsuarioSerializer(users, many=True)
+        # serializer.data luego sera transformado en formato JSON por DRF
+        return Response(serializer.data)
 
-    #MEtodo POST
-    if request.method == 'POST':
-
-        body = request.body.decode('utf-8')
-        user_info = json.loads(body)
-        serializer = UsuarioSerializer(data=user_info)
+    elif request.method == 'POST':
+        serializer = UsuarioSerializer(data = request.data)
         if serializer.is_valid():
-            #El metodo save() llama al metdo create() definido en el serializer
-            #Se crear la instacia del usuario y se guarda
-            user = serializer.save()
-            #devuelve los datos del usuario recien creado en formato JSON
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
-    #Metodo PUT
-    #Metodo DELETE
-    
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_detail(request, pk):
+    """ consultar, actualizar o eliminar un usuario """
+    try:
+        user = Usuario.objects.get(pk = pk)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = UsuarioSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PUT':
+        serializer = UsuarioSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
