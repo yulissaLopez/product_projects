@@ -4,4 +4,10 @@ from .models import Producto
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = "__all__"
+        fields = [
+            "id_product",
+            "name_prod",
+            "price_prod",
+            "stock_prod"
+        ]
+        created_by = serializers.ReadOnlyField(source = 'created_by.username')

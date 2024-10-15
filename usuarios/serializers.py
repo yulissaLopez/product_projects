@@ -11,6 +11,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'password',
             'direccion',
             'pais',
             'date_joined'
