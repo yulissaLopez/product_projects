@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Usuario
 from .serializers import UsuarioSerializer
+from .serializers import InputSerializer
+from .serializers import OutputSerializer
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -64,7 +66,7 @@ class SignUp(APIView):
         # raise exepcition deuelve un error si los datos serializados no son validos
         serializer.is_valid(raise_exception=True)
 
-        if Usuario.objects.filter(email=serialized_data.validated_data['email']).exists():
+        if Usuario.objects.filter(email=serializer.validated_data['email']).exists():
             return Response("Email already registered", status=status.HTTP_400_BAD_REQUEST)
         
         if Usuario.objects.filter(username=serializer.validated_data['username']).exists():
@@ -72,7 +74,7 @@ class SignUp(APIView):
 
         # Linea para crear el usuario
         # ** es para desempaquetar datos en python
-        user = CustomUser.objects.create_user(**serializer.validated_data)
+        user = Usuario.objects.create_user(**serializer.validated_data)
 
         #Log in (Getting an access token)
         refresh = RefreshToken.for_user(user)
@@ -82,8 +84,8 @@ class SignUp(APIView):
             "email": user.email,
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "birth_date": user.birth_date,
-            "biography": user.biography,
+            "direccion": user.direccion,
+            "pais": user.pais,
             "access_token": str(refresh.access_token),
             "refresh_token": str(refresh),
         })
