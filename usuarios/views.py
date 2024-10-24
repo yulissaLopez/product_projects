@@ -56,12 +56,12 @@ class SignUp(APIView):
     
     #permisos de la clase
     # Permite que cualquiera pueda acceder  a la clase
-
     permission_classes =[AllowAny]
 
     def post(self, request):
         # Validar la data entrante
         serializer = InputSerializer(data=request.data)
+        # raise exepcition deuelve un error si los datos serializados no son validos
         serializer.is_valid(raise_exception=True)
 
         if Usuario.objects.filter(email=serialized_data.validated_data['email']).exists():
