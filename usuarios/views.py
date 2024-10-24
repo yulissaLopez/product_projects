@@ -5,6 +5,8 @@ from rest_framework import status
 from .models import Usuario
 from .serializers import UsuarioSerializer
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Create your views here.
@@ -49,3 +51,46 @@ class UserDetail(APIView):
         user = self.get_user(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SignUp(APIView):
+    
+    #permisos de la clase
+    # Permite que cualquiera pueda acceder  a la clase
+
+    permission_classes =[AllowAny]
+
+    def post(self, request):
+        # Validar la data entrante
+        serializer = InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if Usuario.objects.filter(email=serialized_data.validated_data['email']).exists():
+            return Response("Email already registered", status=status.HTTP_400_BAD_REQUEST)
+        
+        if Usuario.objects.filter(username=serializer.validated_data['username']).exists():
+            return Response("Username already exits", status=status.HTTP_400_BAD_REQUEST)
+
+        # Linea para crear el usuario
+        # ** es para desempaquetar datos en python
+        user = CustomUser.objects.create_user(**serializer.validated_data)
+
+        #Log in (Getting an access token)
+        refresh = RefreshToken.for_user(user)
+
+        serializer = OutputSerializer({
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "birth_date": user.birth_date,
+            "biography": user.biography,
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+        })
+
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+        
+
+
+    
