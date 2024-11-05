@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Usuario
 from .serializers import UsuarioSerializer
-from .serializers import InputSerializer
-from .serializers import OutputSerializer
+from .serializers import InputSerializer, ProfileOutputSerializer
+from .serializers import OutputSerializer, LogInInputSerializer, LogInOutputSerializer
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -92,7 +92,50 @@ class SignUp(APIView):
 
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
-        
+class Login(APIView):
 
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        # Validating input data
+        serializer = LogInInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = Usuario.objects.get(username=serializer.validated_data['username'])
+        except Usuario.DoesNotExist:
+            return Response("Username or password is incorrect", status=status.HTTP_400_BAD_REQUEST)
+
+        is_password_correct = user.check_password(serializer.validated_data['password'])
+        if is_password_correct is False:
+            return Response("Username or password is incorrect", status=status.HTTP_400_BAD_REQUEST)
+
+        # Log in (Getting an access token)
+        refresh = RefreshToken.for_user(user)
+
+        # Returning json response
+        serializer = LogInOutputSerializer({
+            "username": user.username,
+            "email": user.email,
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+        })
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        
+class Profile(APIView):
+
+    def get(self, request):
+        """ """
+        # Returning json response
+        serializer = ProfileOutputSerializer({
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
+            "direccion": request.user.direccion,
+            "pais": request.user.pais,
+        })
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     
