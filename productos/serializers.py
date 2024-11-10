@@ -10,4 +10,13 @@ class ProductoSerializer(serializers.ModelSerializer):
 class UsuariosProductosSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsuariosProductos
-        fields = "__all__"
+        fields = [
+            "fecha_venta",
+            "cantidad_producto",
+            "cliente",
+            "producto"
+        ]
+
+# Output serializer
+class UsuariosProductOutpuySerializer(serializers.Serializer):
+    pass

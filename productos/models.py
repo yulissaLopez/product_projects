@@ -17,5 +17,5 @@ class UsuariosProductos(models.Model):
     cantidad_producto=models.IntegerField(verbose_name="Cantidad de Productos")
     # Llaves foraneas
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, verbose_name="Cliente")
-    Producto = models.ForeignKey(Producto, on_delete=models.CASCADE,verbose_name="Producto")
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE,verbose_name="Producto")
         
