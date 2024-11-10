@@ -1,4 +1,5 @@
 from django.db import models
+from usuarios.models import Usuario
 
 # Create your models here.
 class Producto(models.Model):
@@ -9,4 +10,12 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.name_prod
+    
+# Tabla de Usuarios - Productos
+class UsuariosProductos(models.Model):
+    fecha_venta=models.DateField(verbose_name="Fecha Venta")
+    cantidad_producto=models.IntegerField(verbose_name="Cantidad de Productos")
+    # Llaves foraneas
+    cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, verbose_name="Cliente")
+    Producto = models.ForeignKey(Producto, on_delete=models.CASCADE,verbose_name="Producto")
         
