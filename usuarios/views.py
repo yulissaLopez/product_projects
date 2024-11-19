@@ -66,6 +66,8 @@ class SignUp(APIView):
         # raise exepcition deuelve un error si los datos serializados no son validos
         serializer.is_valid(raise_exception=True)
 
+        print(request.data)
+
         if Usuario.objects.filter(email=serializer.validated_data['email']).exists():
             return Response("Email already registered", status=status.HTTP_400_BAD_REQUEST)
         

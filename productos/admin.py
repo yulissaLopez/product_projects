@@ -5,11 +5,11 @@ from .models import Producto, UsuariosProductos
 
 class UsuarioProductosAdmin(admin.ModelAdmin):
     model = UsuariosProductos
-    list_display = "__all__"
+    list_display = ('fecha_venta', 'cantidad_producto', 'cliente', 'producto')
     # Especifica que todos los campos sean clicables
     # Si se hace clic en cualquier campo lo llevara al detalle del registro
-    list_display_links = "__all__"
+    #list_display_links = "__all__"
 
 # Register your models here.
 admin.site.register(Producto)
-admin.site.register(UsuariosProductos)
+admin.site.register(UsuariosProductos, UsuarioProductosAdmin)
