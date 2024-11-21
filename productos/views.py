@@ -59,12 +59,13 @@ class ProductDetail(APIView):
 class UsuariosProductosView(APIView):
 
     """ el =None significa que si no se pasa valor para product_id su valor por defecto sera None. Es decir, el parametro no es obligatorio"""
-    def get(self, request, user_id: int = None):
-        if user_id:
-            usuario_productos=UsuariosProductos.objects.filter(cliente=user_id)
-        else:
-            usuario_productos=UsuariosProductos.objects.all()
-        
+    def get(self, request): #user_id: int = None
+        user_id = request.user.id
+        # if user_id:
+        #     usuario_productos=UsuariosProductos.objects.filter(cliente=user_id)
+        # else:
+        #     usuario_productos=UsuariosProductos.objects.all()
+        usuario_productos=UsuariosProductos.objects.filter(cliente=user_id)
         serializer= UsuariosProductosSerializer(usuario_productos, many = True)
 
         return Response(serializer.data)
